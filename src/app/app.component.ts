@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Angular 5 Exercise 4 - Event Emitter';
+
+  disableBtn = true;
+
 }
