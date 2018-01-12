@@ -21,12 +21,12 @@ const ONE_THOUSAND_MILLISECOND = 1000;
 })
 export class GameControlComponent {
 
-  @Output('timer')
-  gameTimer: EventEmitter<> = new EventEmitter<>();
+  @Output('evenOdds')
+  evenOdds: EventEmitter<{'evens': EvenComponent[], 'odds': OddComponent[]}> = new EventEmitter<{evens: EvenComponent[], odds: OddComponent[]}>();
 
-  evens: EvenComponent[] = [];
+  evenComps: EvenComponent[] = [];
 
-  odds: OddComponent[] = [];
+  oddComps: OddComponent[] = [];
 
   // interval = setInterval(this.updateCount, ONE_THOUSAND_MILLISECOND);
 
@@ -38,9 +38,9 @@ export class GameControlComponent {
     obj.cnt++;
 
     if (obj.cnt % 2 === 0) {
-      obj.evens.push(new EvenComponent());
+      obj.evenComps.push(new EvenComponent());
     } else {
-      obj.odds.push(new OddComponent());
+      obj.oddComps.push(new OddComponent());
     }
   }
 
@@ -54,12 +54,15 @@ export class GameControlComponent {
       return;
     }
 
-    // this.gameTimer.emit({timer: this.interval, count: this.getCount});
+
     let my = this;
 
     this.interval = setInterval(() => {
       my.updateCount(my);
     }, ONE_THOUSAND_MILLISECOND);
+
+    // emit @Output
+    this.evenOdds.emit({'evens': this.evenComps, 'odds': this.oddComps});
   }
 
   endGame() {

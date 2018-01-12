@@ -11,14 +11,17 @@
 
 <hr>
 
-<app-game-control></app-game-control>
+<app-game-control (evenOdds)="freshEvenOddsComponents($event)"></app-game-control>
 
 <hr>
 
-<div>Sample showing children-components (even, odd)</div>
+<hr>
 
-<app-even></app-even>
+<app-even *ngFor="let e of evens"></app-even>
 
-<app-odd></app-odd>
+<hr>
+<hr>
+
+<app-odd *ngFor="let o of odds"></app-odd>
 
 <hr>

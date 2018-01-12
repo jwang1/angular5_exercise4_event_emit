@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {EvenComponent} from 'g./even/even.component';
-import {OddComponent} from 'g./odd/odd.component';
+import {EvenComponent} from './even/even.component';
+import {OddComponent} from './odd/odd.component';
 
 @Component({
   selector: 'app-root',
@@ -17,5 +17,8 @@ export class AppComponent {
   odds: OddComponent[];
 
 
-
+  freshEvenOddsComponents($event) {
+    this.evens = $event.evens;
+    this.odds = $event.odds;
+  }
 }
