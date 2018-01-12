@@ -1,4 +1,18 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter
+} from '@angular/core';
+import {interceptingHandler} from "@angular/common/http/src/module";
+
+// following (webstorm imported clearInterval from "timers", caused  "timeout.close is not a function" error
+// https://github.com/angular/angular/issues/12400
+//import {clearInterval} from "timers";
+
+import {EvenComponent} from "../even/even.component";
+import {OddComponent} from "../odd/odd.component";
+
+const ONE_THOUSAND_MILLISECOND = 1000;
 
 @Component({
   'selector': 'app-game-control',
@@ -7,4 +21,56 @@ import { Component } from '@angular/core';
 })
 export class GameControlComponent {
 
+  @Output('timer')
+  gameTimer: EventEmitter<> = new EventEmitter<>();
+
+  evens: EvenComponent[] = [];
+
+  odds: OddComponent[] = [];
+
+  // interval = setInterval(this.updateCount, ONE_THOUSAND_MILLISECOND);
+
+  interval: any;
+
+  cnt = 0;
+
+  updateCount(obj) {
+    obj.cnt++;
+
+    if (obj.cnt % 2 === 0) {
+      obj.evens.push(new EvenComponent());
+    } else {
+      obj.odds.push(new OddComponent());
+    }
+  }
+
+  getCount(): number {
+    return this.cnt;
+  }
+
+  startGame() {
+    // do not set up too many timers.
+    if (this.interval) {
+      return;
+    }
+
+    // this.gameTimer.emit({timer: this.interval, count: this.getCount});
+    let my = this;
+
+    this.interval = setInterval(() => {
+      my.updateCount(my);
+    }, ONE_THOUSAND_MILLISECOND);
+  }
+
+  endGame() {
+    if (this.interval) {
+      try {
+        clearInterval(this.interval);
+      } catch (error) {
+        console.log('clearInterval encountered error: ' + error);
+      }
+
+      this.interval = null;
+    }
+  }
 }

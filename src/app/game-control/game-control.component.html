@@ -1,4 +1,15 @@
 
-<button class="btn-primary">Start</button>
+<button class="btn-primary" (click)="startGame()">Start</button>
 
-<button class="btn-danger">End</button>
+<button class="btn-danger" (click)="endGame()">End</button>
+
+<hr>
+
+<app-even *ngFor="let even of evens"></app-even>
+
+<hr>
+<hr>
+
+<app-odd *ngFor="let odd of odds"></app-odd>
+
+<hr>

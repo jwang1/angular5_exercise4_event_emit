@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {EvenComponent} from 'g./even/even.component';
+import {OddComponent} from 'g./odd/odd.component';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +11,11 @@ export class AppComponent {
   title = 'Angular 5 Exercise 4 - Event Emitter';
 
   disableBtn = true;
+
+  evens: EvenComponent[];
+
+  odds: OddComponent[];
+
+
 
 }
