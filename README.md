@@ -1,27 +1,175 @@
 # Exercise4EmitEvent
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.0.
+Doc submitted online:
 
-## Development server
+1. app.component  (has 3  children-components  -  game-control.component,  even.component,  odd.component)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+    1.1)  template
 
-## Code scaffolding
+   
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+<button class="btn-success" [disabled]="disableBtn">check bootstrap</button>
 
-## Build
+<hr>
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+<app-game-control (evenOdds)="freshEvenOddsComponents($event)"></app-game-control>
 
-## Running unit tests
+<hr>
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+<hr>
 
-## Running end-to-end tests
+<app-even *ngFor="let e of evens"></app-even>
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+<hr>
+<hr>
 
-## Further help
+<app-odd *ngFor="let o of odds"></app-odd>
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+<hr>
+      1.2) TypeScript
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'Angular 5 Exercise 4 - Event Emitter';
+
+  disableBtn = true;
+
+  evens: EvenComponent[];
+
+  odds: OddComponent[];
+
+
+  freshEvenOddsComponents($event) {
+    this.evens = $event.evens;
+    this.odds = $event.odds;
+  }
+}
+
+
+2.  game-control.component  (2 buttons - start timer and stop timer;  timer controls the count increment)
+
+2.1)  Template
+
+<button class="btn-primary" (click)="startGame()">Start</button>
+
+<button class="btn-danger" (click)="endGame()">End</button>
+
+
+
+
+2.2) TypeScript  [ heavy-lifting ] 
+
+*)  it has 2 click-event-handlers  :   start timer,  and stop timer
+*)  also has the list of EvenComponent, and a list of OddComponent
+*)  when start timer button clicked;   it sets a timer to increment the counter by 1 every 1 second
+    and it also Emits an Event @Output('evenOdds')  used in app.component with event-emit  on game-control.component  (Note, the event-emit is NOT a DOM event, has to be used on Angular component)
+import {EvenComponent} from "../even/even.component";
+import {OddComponent} from "../odd/odd.component";
+
+const ONE_THOUSAND_MILLISECOND = 1000;
+
+@Component({
+  'selector': 'app-game-control',
+  'templateUrl': './game-control.component.html',
+  'styleUrls': ['./game-control.component.css']
+})
+export class GameControlComponent {
+
+  @Output('evenOdds')
+  evenOdds: EventEmitter<{'evens': EvenComponent[], 'odds': OddComponent[]}> = new EventEmitter<{evens: EvenComponent[], odds: OddComponent[]}>();
+
+  evenComps: EvenComponent[] = [];
+
+  oddComps: OddComponent[] = [];
+
+  // interval = setInterval(this.updateCount, ONE_THOUSAND_MILLISECOND);
+
+  interval: any;
+
+  cnt = 0;
+
+  updateCount(obj) {
+    obj.cnt++;
+
+    if (obj.cnt % 2 === 0) {
+      obj.evenComps.push(new EvenComponent());
+    } else {
+      obj.oddComps.push(new OddComponent());
+    }
+  }
+
+  getCount(): number {
+    return this.cnt;
+  }
+
+  startGame() {
+    // do not set up too many timers.
+    if (this.interval) {
+      return;
+    }
+
+
+    let my = this;
+
+    this.interval = setInterval(() => {
+      my.updateCount(my);
+    }, ONE_THOUSAND_MILLISECOND);
+
+    // emit @Output
+    this.evenOdds.emit({'evens': this.evenComps, 'odds': this.oddComps});
+  }
+
+  endGame() {
+    if (this.interval) {
+      try {
+        clearInterval(this.interval);
+      } catch (error) {
+        console.log('clearInterval encountered error: ' + error);
+      }
+
+      this.interval = null;
+    }
+  }
+}
+
+
+
+
+
+
+3. even.component (simple template and css code, but no TypeScript changes)
+
+3.1)  Template
+
+<div class="even"><b>Even</b> Number</div>
+
+
+3.2)  styling 
+
+.even {
+  color: blue;
+  background-color: yellow;
+}
+
+
+
+
+4. odd component (similar to even.component)
+
+4.1) Template 
+
+<div class="odd"><b>Odd</b> Number</div>
+
+
+4.2) Styling
+
+.odd {
+  color: red;
+  background-color: aliceblue;
+}
+
+

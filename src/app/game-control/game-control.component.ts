@@ -34,13 +34,17 @@ export class GameControlComponent {
 
   cnt = 0;
 
-  updateCount(obj) {
-    obj.cnt++;
+  updateCount() {
+    this.cnt++;
 
-    if (obj.cnt % 2 === 0) {
-      obj.evenComps.push(new EvenComponent());
+    if (this.cnt % 2 === 0) {
+      let cmp  = new EvenComponent();
+      cmp.setNumber(this.cnt);
+      this.evenComps.push(cmp);
     } else {
-      obj.oddComps.push(new OddComponent());
+      let cmp = new OddComponent();
+      cmp.setNumber(this.cnt);
+      this.oddComps.push(cmp);
     }
   }
 
@@ -55,12 +59,16 @@ export class GameControlComponent {
     }
 
 
-    let my = this;
+    // let my = this;
 
+    // Huh, using ES6 anonymous function does not require "this" special handling.
     this.interval = setInterval(() => {
-      my.updateCount(my);
+      this.updateCount();
     }, ONE_THOUSAND_MILLISECOND);
 
+    // Note, the author's way of emitting is different;  he emits from the setInterval anonymous-func - for the single-Count;
+    // so, every 1 second, he emits the counter.    My way was updating the components every 1 second; the binding was in *ngFor
+    // from Template.    Author's way (emitting single number) makes code simpler.
     // emit @Output
     this.evenOdds.emit({'evens': this.evenComps, 'odds': this.oddComps});
   }

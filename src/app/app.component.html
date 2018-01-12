@@ -17,11 +17,11 @@
 
 <hr>
 
-<app-even *ngFor="let e of evens"></app-even>
+<app-even *ngFor="let e of evens" [number]="e.number"></app-even>
 
 <hr>
 <hr>
 
-<app-odd *ngFor="let o of odds"></app-odd>
+<app-odd *ngFor="let o of odds" [number]="o.number"></app-odd>
 
 <hr>
